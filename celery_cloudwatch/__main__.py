@@ -4,10 +4,9 @@ from .monitor import main as monitor
 
 
 class CloudWatchCommand(Command):
-    """Defines the CloudWatch celery extension.
-
-    This allows users to do: celery cloudwatch
-    on the command line."""
+    """Monitors the execution of Celery tasks
+    and uploads the results of succeeded and
+    failed tasks to AWS CloudWatch."""
 
     def add_arguments(self, parser):
         """Allows us to expose additional command
