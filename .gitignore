@@ -5,3 +5,6 @@ env/
 *.pyc
 __pycache__
 *.egg-info/
+
+# Ignore builds
+dist/
