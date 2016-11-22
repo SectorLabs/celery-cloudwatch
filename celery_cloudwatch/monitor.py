@@ -163,6 +163,8 @@ def monitor(app, cloudwatch, streams):
                 log_stream,
                 {
                     'name': task.name,
+                    'args': task.args,
+                    'kwargs': task.kwargs,
                     'event': event
                 }
             )
