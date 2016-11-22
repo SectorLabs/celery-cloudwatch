@@ -22,6 +22,10 @@ setup(
             'cloudwatch = celery_cloudwatch.__main__:CloudWatchCommand'
         ]
     },
+    install_requires=[
+        'boto3',
+        'redis'
+    ],
     classifiers=[
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
