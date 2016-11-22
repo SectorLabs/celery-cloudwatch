@@ -38,3 +38,11 @@ This requires you to have ran ``setup.py`` or installed this package through pip
 .. code-block:: bash
 
     $ python -m celery_cloudwatch
+
+Known issues
+-----------
+
+* ``--broker`` on ``celery cloudwatch`` is ignored.
+* No descriptive way to specify other brokers than Redis.
+
+All brokers supported by Celery will work, simply specify the broker URL through the ``REDIS_URL`` environment variable.
