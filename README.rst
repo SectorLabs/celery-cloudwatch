@@ -1,6 +1,14 @@
 Celery CloudWatch
 -----------------
 
+.. image:: https://scrutinizer-ci.com/g/SectorLabs/celery-cloudwatch/badges/build.png?b=master&s=dbee8972701eec8cb3f256360b6c8f2880a8eae7
+    :target: https://scrutinizer-ci.com/g/SectorLabs/celery-cloudwatch/
+
+.. image:: https://scrutinizer-ci.com/g/SectorLabs/celery-cloudwatch/badges/quality-score.png?b=master&s=b715993dcceb3ec81785e324f3cb36b17c40fa0f
+    :target: https://scrutinizer-ci.com/g/SectorLabs/celery-cloudwatch/
+
+.. image:: https://img.shields.io/badge/license-MIT-blue.svg
+
 This is a simple monitoring tool that intercepts the results of Celery tasks and uploads the result to AWS CloudWatch.
 
 Configuration
