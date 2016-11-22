@@ -193,11 +193,24 @@ def main():
     logging.getLogger('botocore').setLevel(logging.CRITICAL)
     logging.getLogger('kombu').setLevel(logging.CRITICAL)
 
+    # check for required environment variables
+    env_vars = [
+        'AWS_CLOUDWATCH_ACCESS_KEY',
+        'AWS_CLOUDWATCH_SECRET_KEY',
+        'AWS_CLOUDWATCH_GROUP_NAME'
+    ]
+
+    error = False
+    for env_var in env_vars:
+        if not os.environ.get(env_var):
+            LOGGER.error('%s not set', env_var)
+            error = True
+
+    if error:
+        sys.exit(1)
+
     # get the broker configuration
     broker_url = os.environ.get('REDIS_URL', 'redis://')
-    if not broker_url:
-        LOGGER.error('BROKER_URL or REDIS_URL not set')
-        sys.exit(1)
 
     # set up the celery application
     app = Celery(broker=broker_url)
@@ -206,12 +219,10 @@ def main():
     # acquire the AWS configuration
     aws_config = {
         'aws_access_key_id': os.environ.get(
-            'AWS_CLOUDWATCH_ACCESS_KEY',
-            'AKIAJSXNG4333PUVGQAA'
+            'AWS_CLOUDWATCH_ACCESS_KEY'
         ),
         'aws_secret_access_key': os.environ.get(
-            'AWS_CLOUDWATCH_SECRET_KEY',
-            'uNKrpCijcKuIRDZ5TsGUjre4rtjHgyKx+jqkzsQZ'
+            'AWS_CLOUDWATCH_SECRET_KEY'
         ),
         'region_name': os.environ.get(
             'AWS_CLOUDWATCH_REGION',
@@ -220,10 +231,7 @@ def main():
     }
 
     # acquire the the cloudwatch group name
-    aws_log_group = os.environ.get('AWS_CLOUDWATCH_GROUP_NAME', 'mustang-development')
-    if not aws_log_group:
-        LOGGER.error('AWS_CLOUDWATCH_GROUP_NAME not set')
-        sys.exit(1)
+    aws_log_group = os.environ.get('AWS_CLOUDWATCH_GROUP_NAME')
 
     # define the streams to log about, the key is the
     # celery event to react to
