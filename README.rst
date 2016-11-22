@@ -1,6 +1,3 @@
-Celery CloudWatch
------------------
-
 .. image:: https://scrutinizer-ci.com/g/SectorLabs/celery-cloudwatch/badges/build.png?b=master&s=dbee8972701eec8cb3f256360b6c8f2880a8eae7
     :target: https://scrutinizer-ci.com/g/SectorLabs/celery-cloudwatch/
 
