@@ -40,7 +40,7 @@ This requires you to have ran ``setup.py`` or installed this package through pip
     $ python -m celery_cloudwatch
 
 Known issues
------------
+------------
 
 * ``--broker`` on ``celery cloudwatch`` is ignored.
 * No descriptive way to specify other brokers than Redis.
