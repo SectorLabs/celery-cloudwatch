@@ -254,5 +254,6 @@ def main():
     # start monitoring
     monitor(app, cloudwatch, streams)
 
+
 if __name__ == '__main__':
     main()

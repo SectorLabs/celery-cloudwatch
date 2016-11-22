@@ -18,4 +18,4 @@ build:
             - 'pip install -r requirements.txt'
     tests:
         override:
-            - pylint-run monitor.py
+            - pylint-run celery_cloudwatch
