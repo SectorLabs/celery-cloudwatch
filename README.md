@@ -18,4 +18,8 @@ The CloudWatch log group does not have to exist. If it doesn't exists, it will b
 
 ## Running
 
-    python monitor.py
+    celery cloudwatch
+
+This requires you to have ran `setup.py` or installed this package through pip. Alternatively, run:
+
+    python -m celery_cloudwatch
