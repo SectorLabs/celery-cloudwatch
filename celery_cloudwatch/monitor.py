@@ -239,7 +239,10 @@ def main():
     # celery event to react to
     streams = {
         'task-failed': (aws_log_group, 'failure'),
-        'task-succeeded': (aws_log_group, 'success')
+        'task-succeeded': (aws_log_group, 'success'),
+        'task-retried': (aws_log_group, 'retry'),
+        'task-revoked': (aws_log_group, 'revoke'),
+        'task-rejected': (aws_log_group, 'reject')
     }
 
     # set up the boto3/cloudwatch client
