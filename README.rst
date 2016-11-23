@@ -49,6 +49,12 @@ This requires you to have ran ``setup.py`` or installed this package through pip
 
     $ python -m celery_cloudwatch
 
+How it works
+------------
+Celery CloudWatch connects to your broker and monitors tasks in real time. When a task succeeded, failed was rejected or revoked, it uploads all available information about that task into a log stream on AWS CloudWatch Logs.
+
+Based on the specified log group name in the ``AWS_CLOUDWATCH_GROUP_NAME``, a log group will be created. For each possible result, a separate log stream is created. For each task result, an entry is added to the log stream associated with the result.
+
 Known issues
 ------------
 
