@@ -6,7 +6,7 @@ import sys
 
 from botocore.exceptions import ClientError
 from celery import Celery
-import boto3
+import psutil
 
 LOGGER = logging.getLogger(__name__)
 
@@ -105,6 +105,31 @@ def upload_log_event(cloudwatch, log_group, log_stream, data):
     SEQUENCE_TOKENS[log_stream] = response['nextSequenceToken']
 
 
+def _calculate_max_tasks():
+    """Calculates the maximum amount of tasks we can keep in
+    memory by taking the current amount of free memory into
+    account.
+
+    We assume an average of 1000 bytes per tasks, then
+    compute how many tasks the currently free memory can
+    hold, but only compute against 80% of the current
+    free memory to make sure we never exceed it.
+
+    Returns:
+        The maximum amount of tasks we can keep in memory.
+    """
+
+    free_memory = (psutil.virtual_memory().free / 100) * 80
+    max_tasks = free_memory / 1000
+
+    LOGGER.info('Computed a maximum of %d tasks with %d bytes of free memory',
+                max_tasks,
+                free_memory
+                )
+
+    return max_tasks
+
+
 def monitor(app, cloudwatch, streams):
     """Monitors the specified Celery app and uploads
     the results of tasks to CloudWatch.
@@ -121,7 +146,9 @@ def monitor(app, cloudwatch, streams):
             Log streams configuration.
     """
 
-    state = app.events.State()
+    state = app.events.State(
+        max_tasks_in_memory=_calculate_max_tasks()
+    )
 
     def on_task_received(event):
         """Event handler for the 'task-received' event
@@ -136,6 +163,8 @@ def monitor(app, cloudwatch, streams):
         for other events, we must have recorded the
         'task-received' event.
         """
+
+        LOGGER.debug('Received \'%s\' - %s', event['type'], str(event))
 
         state.event(event)
 
@@ -154,6 +183,8 @@ def monitor(app, cloudwatch, streams):
         """
 
         def proxy(event):
+            LOGGER.debug('Received \'%s\' - %s', event['type'], str(event))
+
             state.event(event)
             task = state.tasks.get(event['uuid'])
 
@@ -191,7 +222,7 @@ def monitor(app, cloudwatch, streams):
 def main():
     # set up logging, make sure to only show critical errors
     # from third-party packages
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
     logging.getLogger('botocore').setLevel(logging.CRITICAL)
     logging.getLogger('kombu').setLevel(logging.CRITICAL)
 
@@ -246,7 +277,8 @@ def main():
     }
 
     # set up the boto3/cloudwatch client
-    cloudwatch = boto3.client('logs', **aws_config)
+    # cloudwatch = boto3.client('logs', **aws_config)
+    cloudwatch = None
 
     # make sure the cloudwatch log group exists
     try:
