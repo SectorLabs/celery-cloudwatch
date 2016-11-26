@@ -7,7 +7,7 @@ with open(os.path.join(os.path.dirname(__file__), 'README.rst')) as readme:
 
 setup(
     name='celery-cloudwatch-logs',
-    version='1.4',
+    version='1.5',
     packages=find_packages(),
     include_package_data=True,
     license='MIT License',
@@ -24,7 +24,8 @@ setup(
     },
     install_requires=[
         'boto3',
-        'redis'
+        'redis',
+        'psutil'
     ],
     classifiers=[
         'Intended Audience :: Developers',
