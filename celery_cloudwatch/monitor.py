@@ -6,6 +6,7 @@ import sys
 
 from botocore.exceptions import ClientError
 from celery import Celery
+import boto3
 import psutil
 
 LOGGER = logging.getLogger(__name__)
