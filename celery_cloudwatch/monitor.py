@@ -277,8 +277,7 @@ def main():
     }
 
     # set up the boto3/cloudwatch client
-    # cloudwatch = boto3.client('logs', **aws_config)
-    cloudwatch = None
+    cloudwatch = boto3.client('logs', **aws_config)
 
     # make sure the cloudwatch log group exists
     try:
