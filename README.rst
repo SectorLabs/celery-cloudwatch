@@ -29,6 +29,10 @@ Configuration is done through environment variables. The following environment v
 * ``AWS_CLOUDWATCH_SECRET_KEY``
 * ``AWS_CLOUDWATCH_GROUP_NAME``
 
+``AWS_CLOUDWATCH_ACCESS_KEY`` and ``AWS_SECRET_KEY`` are optional. If not specified, Boto3 will handle the configuration for these keys, as described here:
+
+http://boto3.readthedocs.io/en/latest/guide/configuration.html
+
 Optionally, the following environment variables may be set:
 
 * ``REDIS_URL="redis://"``

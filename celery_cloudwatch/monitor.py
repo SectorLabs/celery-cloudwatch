@@ -125,8 +125,7 @@ def _calculate_max_tasks():
 
     LOGGER.info('Computed a maximum of %d tasks with %d bytes of free memory',
                 max_tasks,
-                free_memory
-                )
+                free_memory)
 
     return max_tasks
 
@@ -227,20 +226,12 @@ def main():
     logging.getLogger('botocore').setLevel(logging.CRITICAL)
     logging.getLogger('kombu').setLevel(logging.CRITICAL)
 
+    # acquire the the cloudwatch group name
+    aws_log_group = os.environ.get('AWS_CLOUDWATCH_GROUP_NAME')
+
     # check for required environment variables
-    env_vars = [
-        'AWS_CLOUDWATCH_ACCESS_KEY',
-        'AWS_CLOUDWATCH_SECRET_KEY',
-        'AWS_CLOUDWATCH_GROUP_NAME'
-    ]
-
-    error = False
-    for env_var in env_vars:
-        if not os.environ.get(env_var):
-            LOGGER.error('%s not set', env_var)
-            error = True
-
-    if error:
+    if not aws_log_group:
+        LOGGER.error('AWS_CLOUDWATCH_GROUP_NAME not set')
         sys.exit(1)
 
     # get the broker configuration
@@ -250,7 +241,9 @@ def main():
     app = Celery(broker=broker_url)
     LOGGER.info('Connected to broker at %s', broker_url)
 
-    # acquire the AWS configuration
+    # acquire the AWS configuration, if AWS_CLOUDWATCH_ACCESS_KEY
+    # and/or AWS_CLOUDWATCH_SECRET_KEY are not set, Boto should
+    # get these from the user's local environment
     aws_config = {
         'aws_access_key_id': os.environ.get(
             'AWS_CLOUDWATCH_ACCESS_KEY'
@@ -264,9 +257,6 @@ def main():
         )
     }
 
-    # acquire the the cloudwatch group name
-    aws_log_group = os.environ.get('AWS_CLOUDWATCH_GROUP_NAME')
-
     # define the streams to log about, the key is the
     # celery event to react to
     streams = {
@@ -278,7 +268,12 @@ def main():
     }
 
     # set up the boto3/cloudwatch client
+    ec2 = boto3.client('ec2', **aws_config)
     cloudwatch = boto3.client('logs', **aws_config)
+
+    # make sure we're succesfully authenticated by making
+    # a dumy call to describe_regions()
+    ec2.describe_regions()
 
     # make sure the cloudwatch log group exists
     try:

@@ -22,3 +22,7 @@ class CloudWatchCommand(Command):
         """Invoked when the user runs `celery cloudwatch`."""
 
         monitor()
+
+
+if __name__ == '__main__':
+    monitor()
